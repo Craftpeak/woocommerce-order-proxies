@@ -1,0 +1,15 @@
+{
+  "name"        : "craftpeak/woocommerce-order-proxies",
+  "description" : "A WooCommerce plugin to allow proxies as metadata on a per-order basis.",
+  "keywords"    : ["wordpress","woocommerce"],
+  "homepage"    : "https://github.com/Craftpeak/woocommerce-order-proxies/",
+  "license"     : "GPL-3.0+",
+  "type"        : "wordpress-plugin",
+  "authors"     : [
+    {
+      "name"     : "Craftpeak",
+      "email"    : "hello@craftpeak.com",
+      "homepage" : "https://craftpeak.com"
+    }
+  ]
+}
