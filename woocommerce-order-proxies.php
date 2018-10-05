@@ -22,7 +22,7 @@ class WC_Order_Proxies {
 		add_action( 'woocommerce_after_order_notes', [ &$this, 'add_checkout_field' ] );
 
 		// Validate & Save the order field
-		add_action( 'woocommerce_checkout_process', [ &$this, 'validate_checkout_field' ] );
+		add_action( 'woocommerce_after_checkout_validation', [ &$this, 'validate_checkout_field' ], 10, 2 );
 		add_action ( 'woocommerce_checkout_update_order_meta', [ &$this, 'save_checkout_field' ] );
 
 		// Display the proxy in the order backend
@@ -58,6 +58,13 @@ class WC_Order_Proxies {
 		update_post_meta( $post_id, 'require_order_proxy', empty( $_POST['require_order_proxy'] ) ? 'no' : 'yes' );
 	}
 
+	/**
+	 * Adds a checkout field for a proxy if there is a
+	 *
+	 * @param $checkout
+	 *
+	 * @return mixed
+	 */
 	public function add_checkout_field( $checkout ) {
 		// Set to not ask for a proxy by default
 		$ask_for_proxy = false;
@@ -73,6 +80,7 @@ class WC_Order_Proxies {
 			}
 		}
 
+		// If we should add a proxy,
 		if ( $ask_for_proxy ) {
 			echo '<div class="order-proxies-checkout-field-wrap">';
 
@@ -90,18 +98,34 @@ class WC_Order_Proxies {
 		return false;
 	}
 
-	public function validate_checkout_field() {
-		if ( ! $_POST['order_proxy'] ) {
-			wc_add_notice( __( 'Items in your cart require the proxy field to be filled in. If you are picking up yourself add "Self" or "N/A".', 'woocommerce-order-proxies') );
+	/**
+	 * Verifies that the order proxy field is filled out, if not, return an error
+	 *
+	 * @param $data
+	 * @param $errors
+	 */
+	public function validate_checkout_field( $data, $errors ) {
+		if ( isset( $_POST['order_proxy'] ) && ! $_POST['order_proxy'] ) {
+			$errors->add( 'validation', __( 'Items in your cart require the proxy field to be filled in. If you are picking up yourself add "Self" or "N/A".', 'woocommerce-order-proxies') );
 		}
 	}
 
+	/**
+	 * Saves the order proxy field entered on checkout
+	 *
+	 * @param $order_id
+	 */
 	public function save_checkout_field( $order_id ) {
 		if ( ! empty( $_POST['order_proxy'] ) ) {
-			update_post_meta( $order_id, 'order_proxy', sanitize_text_field( $_POST['my_field_name'] ) );
+			update_post_meta( $order_id, 'order_proxy', sanitize_text_field( $_POST['order_proxy'] ) );
 		}
 	}
 
+	/**
+	 * Displays the order proxy in the order edit backend if it exists
+	 *
+	 * @param $order
+	 */
 	public function display_order_proxy_order_admin( $order ) {
 		$order_proxy = get_post_meta( $order->id, 'order_proxy', true );
 
