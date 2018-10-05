@@ -41,7 +41,7 @@ class WC_Order_Proxies {
 			'id'            => 'require_order_proxy',
 			'wrapper_class' => 'order-proxies-checkbox',
 			'label'         => __( 'Ask for a proxy?', 'woocommerce-order-proxies' ),
-			'description'   => __( 'If checked, we will show a field during checkout to ask for the name of a proxy.', 'woocommerce-order-proxies' ),
+			'description'   => __( 'If checked, the checkout page will show a required field to ask for a proxy.', 'woocommerce-order-proxies' ),
 		] );
 
 		// Close Options Group
