@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Order Proxies
  * Plugin URI: https://github.com/Craftpeak/woocommerce-order-proxies
  * Description: A WooCommerce plugin to allow proxies as metadata on a per-order basis.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Craftpeak
  * Author URI: https://craftpeak.com
  * Requires at least: 4.0
@@ -126,18 +126,21 @@ class WC_Order_Proxies {
 	 *
 	 * @param $order
 	 */
-	public function display_order_proxy_order_admin( $order ) {
-		$order_proxy = get_post_meta( $order->id, 'order_proxy', true );
+	public function display_order_proxy_order_admin( \WC_Order $order ) {
+		$order_proxy = $order->get_meta( 'order_proxy', true );
 
-		if ( $order_proxy ) {
-			?>
-			<p>
-				<strong><?php echo __( 'Order Proxy', 'woocommerce-order-proxies' ); ?>:</strong>
-				<br>
-				<?php echo esc_html( $order_proxy ); ?>
-			</p>
-			<?php
+		// Bail if there's no order proxy
+		if ( ! $order_proxy ) {
+			return;
 		}
+
+		?>
+		<p>
+			<strong><?php echo __( 'Order Proxy', 'woocommerce-order-proxies' ); ?>:</strong>
+			<br />
+			<?php echo esc_html( $order_proxy ); ?>
+		</p>
+		<?php
 	}
 }
 
